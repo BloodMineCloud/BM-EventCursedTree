@@ -1,0 +1,86 @@
+plugins {
+    id 'java'
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.15"
+    id 'xyz.jpenilla.run-paper' version "2.3.1"
+    id 'de.eldoria.plugin-yml.bukkit' version "0.7.1"
+    id 'com.github.johnrengelman.shadow' version "8.1.1"
+}
+
+group = 'ru.bloodmine'
+version = '1.0.0'
+description = 'plugin for add cursed tree event'
+java.sourceCompatibility = JavaVersion.VERSION_16
+java.targetCompatibility = JavaVersion.VERSION_16
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    }
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven { url = uri("https://oss.sonatype.org/content/groups/public/") }
+    maven { url = uri("https://maven.enginehub.org/repo/") }
+    maven { url = uri("https://jitpack.io/") }
+    maven { url = uri("https://repo.codemc.io/repository/maven-public/") }
+    maven { url = uri("https://repo.maven.apache.org/maven2/") }
+    maven { url = uri("https://mymavenrepo.com/repo/AzWPavD3lYKKBaGswiVO/") }
+}
+
+dependencies {
+    /* CONFIG PROVIDER */
+    implementation "me.thedivazo.libs.DVZConfig:lang-yml:1.2.1"
+    implementation "me.thedivazo.libs.DVZConfig:core:1.2.1"
+
+    /* COMMAND PROVIDER */
+    implementation 'org.incendo:cloud-paper:2.0.0-beta.10'
+
+    /* PAPER */
+    paperweight.paperDevBundle("1.17.1-R0.1-SNAPSHOT")
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    implementation "net.kyori:adventure-text-serializer-legacy:4.22.0"
+    implementation "net.kyori:adventure-text-serializer-plain:4.22.0"
+
+    /* INTEGRATION */
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    compileOnly "com.sk89q.worldedit:worldedit-bukkit:7.2.8"
+    compileOnly "com.sk89q.worldguard:worldguard-bukkit:7.0.7"
+
+    /* LIBRARES */
+    compileOnly "org.projectlombok:lombok:1.18.38"
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
+    implementation 'com.google.inject:guice:7.0.0'
+    implementation "com.google.guava:guava:33.5.0-jre"
+
+    /* TEST */
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+bukkit {
+    name = rootProject.name
+    version = project.version
+    main = "ru.bloodmine.cursedtree.BMCursedTreePlugin"
+    authors = ["BloodMine", "TheDiVaZo"]
+    description = rootProject.description
+    apiVersion = "1.16"
+
+    depend = [ "PlaceholderAPI" ]
+}
+
+tasks {
+    runServer {
+        javaLauncher = javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(16)
+        }
+        minecraftVersion("1.16.5")
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    minimize()
+}

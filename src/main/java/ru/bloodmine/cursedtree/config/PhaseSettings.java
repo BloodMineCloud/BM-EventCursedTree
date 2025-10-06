@@ -1,13 +1,16 @@
 package ru.bloodmine.cursedtree.config;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ConfigSerializable
+@Getter
 public  class PhaseSettings {
-    private Component phaseName = Component.text("Phase");
+    private TextComponent phaseName = Component.text("Phase");
     private List<ActionSettings> actions = new ArrayList<>();
 }

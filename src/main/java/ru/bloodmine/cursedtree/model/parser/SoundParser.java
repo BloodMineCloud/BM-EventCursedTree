@@ -14,6 +14,11 @@ public class SoundParser implements ActionParser<SoundAction> {
     private static final Pattern PITCH_FIELD = Pattern.compile("(?:p:|pitch:)([0-9]*\\.?[0-9]+([eE][0-9]+)?)");
 
     @Override
+    public String name() {
+        return "sound";
+    }
+
+    @Override
     public boolean isValidSyntaxBody(String body) {
         return TYPE_FIELD.matcher(body).matches();
     }

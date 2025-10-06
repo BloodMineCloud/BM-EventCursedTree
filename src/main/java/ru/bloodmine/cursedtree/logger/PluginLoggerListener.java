@@ -20,7 +20,7 @@ public class PluginLoggerListener implements TypeListener {
         logger.info("Clazz " + clazz.getSimpleName() + " start logger injected...");
         while (clazz != null) {
             for (Field field : clazz.getDeclaredFields()) {
-                if (field.getType() == Logger.class && field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(jakarta.inject.Inject.class)) {
+                if (field.getType() == Logger.class && (field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(InjectLogger.class))) {
                     typeEncounter.register(new PluginLoggerInjector<T>(field, logger));
                 }
             }

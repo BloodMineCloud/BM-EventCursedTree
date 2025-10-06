@@ -1,5 +1,6 @@
 package ru.bloodmine.cursedtree.model.parser;
 
+import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -10,7 +11,6 @@ import ru.bloodmine.cursedtree.model.action.PotionEffectAction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@RequiredArgsConstructor
 public class PotionEffectParser implements ActionParser<PotionEffectAction> {
     private static final Pattern TYPE_FIELD = Pattern.compile("(?:t:|type:)([a-zA-Z_]+)");
     private static final Pattern DURATION_FIELD = Pattern.compile("(?:du:|duration:)([0-9]+)");
@@ -23,6 +23,16 @@ public class PotionEffectParser implements ActionParser<PotionEffectAction> {
     private static final Pattern DISTANCE_FIELD = Pattern.compile("(?:di:|distance:)([0-9]*\\.?[0-9]+([eE][0-9]+)?)");
 
     private final JavaPlugin plugin;
+
+    @Inject
+    public PotionEffectParser(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public String name() {
+        return "potion";
+    }
 
     @Override
     public boolean isValidSyntaxBody(String body) {

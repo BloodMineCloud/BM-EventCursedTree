@@ -81,7 +81,7 @@ public class SchematicActor {
 
             Operation operation = holder.createPaste(editSession)
                     .to(position)
-                    .ignoreAirBlocks(true)
+                    .ignoreAirBlocks(false)
                     .build();
 
             Operations.complete(operation);
@@ -118,5 +118,16 @@ public class SchematicActor {
 
     public boolean isActive(String sessionName) {
         return activeSchematics.containsKey(sessionName);
+    }
+
+    public void undoAllSchematics() {
+        activeSchematics.forEach((sessionName, session) -> {
+            try (EditSession undoSession = WorldEdit.getInstance().newEditSession(session.getWorld())) {
+                session.undo(undoSession);
+            } catch (Exception e) {
+                logger.error("Failed to undo schematic: {}", sessionName, e);
+            }
+        });
+        activeSchematics.clear();
     }
 }

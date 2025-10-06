@@ -10,5 +10,5 @@ import java.util.Map;
 @Getter
 public class RegionSettings {
     private int cubeRadius = 20;
-    private Map<String, Object> flags = new HashMap<>();
+    private Map<String, String> flags = new HashMap<>();
 }

@@ -1,10 +1,13 @@
 package ru.bloodmine.cursedtree.service;
 
+import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.CommandStringFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -13,27 +16,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import ru.bloodmine.cursedtree.util.RandomHashGenerator;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class RegionService {
-    private static final String NAME_TEMPLATE = "tree_id-%s_hash-%s";
-    private static final String SYMBOLS_ID = "abcdefghijklmnopqrstuvwxyz1234567890";
-    private static String RANDOM_HASH = ThreadLocalRandom.current().ints(4, 0, SYMBOLS_ID.length())
-            .mapToObj(SYMBOLS_ID::charAt)
-            .map(Object::toString)
-            .collect(Collectors.joining());
+    private static final String NAME_TEMPLATE = "tree_id_%s_hash_%s";
+    private static String HASH = RandomHashGenerator.generate();
 
     private final Map<String, String> sessionNameToWorld = new HashMap<>();
     private final Set<String> activeRegions = new HashSet<>();
     private final double cubeRadius;
     private final Map<Flag<?>, Object> flags;
 
+    @Inject
     public RegionService(@Named("cubeRadius") double cubeRadius, @Named("flags") Map<Flag<?>, Object> flags) {
         this.cubeRadius = cubeRadius;
         this.flags = flags;
@@ -126,6 +125,6 @@ public class RegionService {
     }
 
     private static String hashName(String id) {
-        return String.format(NAME_TEMPLATE, id, RANDOM_HASH);
+        return String.format(NAME_TEMPLATE, id, HASH);
     }
 }

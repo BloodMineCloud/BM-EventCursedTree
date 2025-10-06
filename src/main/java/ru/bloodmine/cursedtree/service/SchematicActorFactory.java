@@ -6,13 +6,14 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
+import ru.bloodmine.cursedtree.logger.InjectLogger;
 
 import java.io.File;
 import java.nio.file.Path;
 
 public class SchematicActorFactory {
 
-    @Inject
+    @InjectLogger
     private Logger logger;
     private final JavaPlugin plugin;
     private final Path schematicDir;

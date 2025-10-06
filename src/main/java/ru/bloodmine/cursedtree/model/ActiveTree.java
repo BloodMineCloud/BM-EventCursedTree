@@ -1,91 +1,93 @@
 package ru.bloodmine.cursedtree.model;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Nullable;
-import ru.bloodmine.cursedtree.model.action.Action;
+import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ActiveTree {
-    private final Tree activeTree;
+    private final Logger logger;
+
+    private final Tree tree;
     private final List<Phase> phases;
-    private int currentPhaseIndex = -1;
+    @Getter
+    private int currentIndex = -1;
+    private boolean shutdown = false;
 
-    public ActiveTree(Tree activeTree, List<Phase> phases) {
+    public ActiveTree(Logger logger, Tree tree, List<Phase> phases) {
+        this.logger = logger;
         this.phases = phases;
-        this.activeTree = activeTree;
+        this.tree = tree;
     }
 
-    public boolean isValidPhaseIndex() {
-        return currentPhaseIndex >= phases.size() || currentPhaseIndex <= 0;
+    public boolean hasCurrent() { return currentIndex >= 0 && currentIndex < phases.size(); }
+    public boolean hasNext()    { return (currentIndex + 1) < phases.size(); }
+    public boolean hasPrev()    { return (currentIndex - 1) >= 0; }
+    public boolean isFirst()    { return currentIndex == 0; }
+    public boolean isLast()     { return currentIndex == phases.size() - 1; }
+
+    public Optional<Component> currentPhaseName() {
+        return hasCurrent() ? java.util.Optional.ofNullable(phases.get(currentIndex).getPhaseName())
+                : java.util.Optional.empty();
     }
 
-    public boolean isFirstPhase() {
-        return currentPhaseIndex == 0;
-    }
-
-    public boolean isLastPhase() {
-        return currentPhaseIndex == phases.size() - 1;
-    }
-
-    @Nullable
-    public Component getCurrentPhaseName() {
-        if (isValidPhaseIndex()) return null;
-        return phases.get(currentPhaseIndex).getPhaseName();
-    }
-
-    public boolean nextPhase() {
-        if (isValidPhaseIndex()) return false;
-
-        int prevIndex = currentPhaseIndex;
-
-        if (prevIndex >= 0) {
-            for (Action action : phases.get(currentPhaseIndex).getActions()) {
-                action.stop();
-            }
-        }
-
-        int nextIndex = currentPhaseIndex + 1;
-
-        if (nextIndex < phases.size()) {
-            for (Action action : phases.get(nextIndex).getActions()) {
-                action.start(activeTree);
-            }
-        }
-
-        currentPhaseIndex = nextIndex;
+    public boolean next() {
+        if (shutdown || !hasNext()) return false;
+        enter(currentIndex+1);
         return true;
     }
 
-    public boolean prevPhase() {
-        if (isValidPhaseIndex()) return false;
+    public boolean prev() {
+        if (shutdown || !hasPrev()) return false;
+        enter(currentIndex-1);
+        return true;
+    }
 
-        int prevIndex = currentPhaseIndex;
-
-        if (prevIndex < phases.size()) {
-            for (Action action : phases.get(currentPhaseIndex).getActions()) {
-                action.stop();
-            }
-        }
-
-        int nextIndex = currentPhaseIndex - 1;
-
-        if (nextIndex >= 0) {
-            for (Action action : phases.get(nextIndex).getActions()) {
-                action.start(activeTree);
-            }
-        }
-
-        currentPhaseIndex = prevIndex;
+    public boolean gotoPhase(int newIndex) {
+        if (shutdown || newIndex < 0 || newIndex >= phases.size() || newIndex == currentIndex) return false;
+        enter(newIndex);
         return true;
     }
 
     public void shutdown() {
-        if (!isValidPhaseIndex()) return;
-        for (Action action : phases.get(currentPhaseIndex).getActions()) {
-            action.stop();
+        if (shutdown) return;
+        if (hasCurrent()) exit(currentIndex);
+        shutdown = true;
+    }
+
+    private void enter(int newIndex) {
+        if (shutdown) throw new IllegalStateException("ActiveTree already shutdown");
+        if (newIndex < 0 || newIndex >= phases.size()) throw new IndexOutOfBoundsException();
+
+        if (hasCurrent()) exit(currentIndex);
+        currentIndex = newIndex;
+        startPhase(currentIndex);
+    }
+
+    private void exit(int i) {
+        Phase p = phases.get(i);
+        try {
+            p.stop();
+        } catch (Exception e) {
+            logger.warn("Phase exit failed: {}", p, e);
         }
     }
 
+    private void startPhase(int i) {
+        Phase p = phases.get(i);
+        try {
+            p.start(tree); // дефолтно — старт всех actions
+        } catch (Exception e) {
+            logger.warn("Phase start failed: {}", p, e);
+            safeExitOnEnterFail(i);
+            throw e;
+        }
+    }
 
+    private void safeExitOnEnterFail(int i) {
+        try { phases.get(i).stop(); } catch (Exception ignored) {}
+        currentIndex = -1;
+    }
 }

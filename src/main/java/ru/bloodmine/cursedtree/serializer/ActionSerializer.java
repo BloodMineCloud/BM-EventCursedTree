@@ -34,6 +34,6 @@ public class ActionSerializer extends ScalarSerializer<ActionSettings> {
 
     @Override
     protected Object serialize(ActionSettings item, Predicate<Class<?>> typeSupported) {
-        return String.format(ACTION_TEMPLATE, item.getName().toUpperCase(), item.getBody());
+        return String.format(ACTION_TEMPLATE, item.getName().toLowerCase(), item.getBody());
     }
 }

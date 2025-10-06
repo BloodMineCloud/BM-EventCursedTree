@@ -30,6 +30,7 @@ public class ReloadCommand extends AbstractCommand{
 
     @Override
     public void execute(@NonNull CommandContext<CommandSender> commandContext) {
+        super.execute(commandContext);
         commandContext.sender().sendMessage(Component.text("Plugin reloading...", NamedTextColor.GREEN));
         try {
             service.reload();

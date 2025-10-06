@@ -12,6 +12,7 @@ public class ReloadService {
     }
 
     public void reload() {
+        BMCursedTreePlugin.unregisterAllPluginCommands(plugin);
         plugin.reload();
     }
 }

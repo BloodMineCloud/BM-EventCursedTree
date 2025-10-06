@@ -22,8 +22,8 @@ public class BlockVectorSerializer implements TypeSerializer<BlockVector> {
     public void serialize(Type type, @Nullable BlockVector obj, ConfigurationNode node) throws SerializationException {
         if (obj == null) return;
 
-        node.node("x").set(obj.getX());
-        node.node("y").set(obj.getY());
-        node.node("z").set(obj.getZ());
+        node.node("x").set(obj.getBlockX());
+        node.node("y").set(obj.getBlockY());
+        node.node("z").set(obj.getBlockZ());
     }
 }

@@ -31,7 +31,7 @@ public class TreeLifeCycle implements LifeCyclable {
 
     @Override
     public void shutdown() {
-        treePlacerService.removeAll();
         activateTreeService.endCurrentEvent();
+        treePlacerService.removeAll();
     }
 }

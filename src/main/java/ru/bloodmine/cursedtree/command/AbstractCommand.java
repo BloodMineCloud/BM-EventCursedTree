@@ -17,6 +17,8 @@ public abstract class AbstractCommand implements CommandExecutionHandler<Command
 
     private final CommandManager<CommandSender> manager;
 
+    private boolean shutdown = false;
+
     protected AbstractCommand(Logger logger, CommandManager<CommandSender> manager) {
         this.logger = logger;
         this.manager = manager;
@@ -30,5 +32,15 @@ public abstract class AbstractCommand implements CommandExecutionHandler<Command
         manager.command(
                 buildCommand(manager, manager.commandBuilder("cursedtree").handler(this))
         );
+    }
+
+    @Override
+    public void execute(@NonNull CommandContext<CommandSender> commandContext) {
+        if (shutdown) throw new IllegalStateException("Command is already shutdown");
+    }
+
+    @Override
+    public void shutdown() {
+        shutdown = true;
     }
 }

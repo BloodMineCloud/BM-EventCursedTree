@@ -30,6 +30,7 @@ public class StopCommand extends AbstractCommand {
 
     @Override
     public void execute(@NonNull CommandContext<CommandSender> commandContext) {
+        super.execute(commandContext);
         boolean isStopped = activateTreeService.endCurrentEvent();
         if (isStopped) {
             commandContext.sender().sendMessage(Component.text("Дерево успешно остановлено").color(NamedTextColor.GREEN));

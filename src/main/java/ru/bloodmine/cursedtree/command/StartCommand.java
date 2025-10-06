@@ -56,12 +56,13 @@ public class StartCommand extends AbstractCommand {
 
     @Override
     public void execute(@NonNull CommandContext<CommandSender> commandContext) {
+        super.execute(commandContext);
         Optional<String> treeId = commandContext.optional(TREE_ID_FIELD);
         Tree startedTree = null;
         if (treeId.isPresent()) {
             Tree tree = trees.get(treeId.get());
             if (tree == null) {
-                commandContext.sender().sendMessage(Component.text("Invalid tree ID "+treeId.get(), NamedTextColor.RED));
+                commandContext.sender().sendMessage(Component.text("Неверный идентификатор дерева "+treeId.get(), NamedTextColor.RED));
             }
 
             if (activateTreeService.startEvent(tree)) {

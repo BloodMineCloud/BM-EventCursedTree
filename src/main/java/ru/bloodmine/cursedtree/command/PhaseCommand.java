@@ -54,6 +54,7 @@ public class PhaseCommand extends AbstractCommand {
 
     @Override
     public void execute(@NonNull CommandContext<CommandSender> commandContext) {
+        super.execute(commandContext);
         ActiveTree activeTree = activateTreeService.getCurrentActiveTree();
         CommandSender sender = commandContext.sender();
         Action action = commandContext.get(ACTION_NAME);
@@ -73,14 +74,14 @@ public class PhaseCommand extends AbstractCommand {
                         Component.text("Уже на последней фазе.", NamedTextColor.YELLOW)
                 ));
                 activeTree.currentPhaseName().ifPresent(name ->
-                        sender.sendMessage(PREFIX.append(Component.text("Текущая фаза: ", NamedTextColor.GRAY)).append(name))
+                        sender.sendMessage(PREFIX.append(Component.text("Текущая фаза: ", NamedTextColor.GRAY)).append(Component.text(name).color(NamedTextColor.GOLD)))
                 );
                 return;
             }
 
             activeTree.next();
             sender.sendMessage(PREFIX.append(Component.text("Перешли к следующей фазе: ", NamedTextColor.GREEN))
-                    .append(activeTree.currentPhaseName().orElse(Component.text("<без имени>", NamedTextColor.GRAY))));
+                    .append(activeTree.currentPhaseName().map(phaseName -> Component.text(phaseName).color(NamedTextColor.GOLD)).orElse(Component.text("<Без имени>", NamedTextColor.GRAY))));
         }
         else if (action == Action.PREV) {
             if (!activeTree.hasPrev()) {
@@ -88,14 +89,14 @@ public class PhaseCommand extends AbstractCommand {
                         Component.text("Уже на первой фазе.", NamedTextColor.YELLOW)
                 ));
                 activeTree.currentPhaseName().ifPresent(name ->
-                        sender.sendMessage(PREFIX.append(Component.text("Текущая фаза: ", NamedTextColor.GRAY)).append(name))
+                        sender.sendMessage(PREFIX.append(Component.text("Текущая фаза: ", NamedTextColor.GRAY)).append(Component.text(name).color(NamedTextColor.GOLD)))
                 );
                 return;
             }
 
             activeTree.prev();
             sender.sendMessage(PREFIX.append(Component.text("Вернулись к предыдущей фазе: ", NamedTextColor.GREEN))
-                    .append(activeTree.currentPhaseName().orElse(Component.text("<без имени>", NamedTextColor.GRAY))));
+                    .append(activeTree.currentPhaseName().map(phaseName -> Component.text(phaseName).color(NamedTextColor.GOLD)).orElse(Component.text("<без имени>", NamedTextColor.GRAY))));
         }
         else {
             sender.sendMessage(Component.text("Неизвестное действие. Используйте: next или prev", NamedTextColor.RED));

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class Phase {
-    private final Component phaseName;
+    private final String phaseName;
     @Singular
     private List<Action> actions;
 

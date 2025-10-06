@@ -129,6 +129,6 @@ public class ConfigModule extends AbstractModule {
 
     @Provides
     public @Named("droppedLocations") List<BlockVector> droppedLocations(ConfigManager configManager) {
-        return configManager.getMainConfig().getDroppedLocations();
+        return configManager.getMainConfig().getDroppedLocations().stream().map(BlockVector::clone).toList();
     }
 }

@@ -23,6 +23,8 @@ public class CommandLifeCycle implements LifeCyclable {
 
     @Override
     public void shutdown() {
-
+        for (CommandPlugin commandPlugin : commandPlugins) {
+            commandPlugin.shutdown();
+        }
     }
 }

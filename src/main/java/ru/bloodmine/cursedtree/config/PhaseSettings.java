@@ -11,6 +11,6 @@ import java.util.List;
 @ConfigSerializable
 @Getter
 public  class PhaseSettings {
-    private TextComponent phaseName = Component.text("Phase");
+    private String phaseName = "Phase";
     private List<ActionSettings> actions = new ArrayList<>();
 }

@@ -1,7 +1,6 @@
 package ru.bloodmine.cursedtree.model;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Optional;
 public class ActiveTree {
     private final Logger logger;
 
+    @Getter
     private final Tree tree;
     private final List<Phase> phases;
     @Getter
@@ -28,7 +28,7 @@ public class ActiveTree {
     public boolean isFirst()    { return currentIndex == 0; }
     public boolean isLast()     { return currentIndex == phases.size() - 1; }
 
-    public Optional<Component> currentPhaseName() {
+    public Optional<String> currentPhaseName() {
         return hasCurrent() ? java.util.Optional.ofNullable(phases.get(currentIndex).getPhaseName())
                 : java.util.Optional.empty();
     }

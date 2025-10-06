@@ -27,8 +27,9 @@ public class ItemDropAction implements Action {
     @InjectLogger
     private final Logger logger;
     private final Iterable<ItemStack> droppedItems;
-    private final Collection<BlockVector> droppedLocations;
+    private final Collection<BlockVector> droppedVectors;
     private final long period;
+    private final boolean randomLoc;
     private final JavaPlugin plugin;
 
     private BukkitTask bukkitTask;
@@ -38,11 +39,15 @@ public class ItemDropAction implements Action {
     @Override
     public void start(Tree tree) {
         if (bukkitTask != null) bukkitTask.cancel();
-        Iterator<Location> locationIterator = Iterators.cycle(
-                droppedLocations.stream()
-                        .map(vector -> tree.spawnLocation().clone().add(vector))
-                        .toList()
-        );
+
+        List<Location> droppedLocations = droppedVectors.stream()
+                .map(vector -> tree.spawnLocation().clone().add(vector))
+                .collect(ArrayList::new, List::add, List::addAll);
+        if (randomLoc) {
+            Collections.shuffle(droppedLocations);
+        }
+
+        Iterator<Location> locationIterator = Iterators.cycle(droppedLocations);
         Iterator<ItemStack> dropItemIterator = droppedItems.iterator();
         bukkitTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (dropItemIterator.hasNext() && locationIterator.hasNext()) {
@@ -50,8 +55,8 @@ public class ItemDropAction implements Action {
                 Location location = locationIterator.next();
                 Item item = location.getWorld().dropItemNaturally(location, droppedItem);
 
-                item.setGravity(true);
                 item.setVelocity(new Vector(0, -0.05, 0));
+                item.setGlowing(true);
 
                 AtomicInteger counter = new AtomicInteger(0);
 

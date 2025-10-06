@@ -10,12 +10,14 @@ import ru.bloodmine.cursedtree.logger.InjectLogger;
 import ru.bloodmine.cursedtree.model.action.ItemDropAction;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemDropParser implements ActionParser<ItemDropAction> {
     private static final Pattern PERIOD_FIELD = Pattern.compile("(?:p:|period:)?([0-9]+)");
+    private static final Pattern RANDOM_LOC_FIELD = Pattern.compile("(?:r:|random:)?(true|false)");
 
     @InjectLogger
     private Logger logger;
@@ -38,15 +40,20 @@ public class ItemDropParser implements ActionParser<ItemDropAction> {
 
     @Override
     public boolean isValidSyntaxBody(String body) {
-        return PERIOD_FIELD.matcher(body).matches();
+        return PERIOD_FIELD.matcher(body).find();
     }
 
     @Override
     public ItemDropAction parse(String body) {
         Matcher periodMatcher = PERIOD_FIELD.matcher(body);
-        if (!periodMatcher.matches()) throw new IllegalArgumentException("Invalid body '" + body +"'");
-
+        if (!periodMatcher.find()) throw new IllegalArgumentException("Invalid body '" + body +"'");
         int period = Integer.parseInt(periodMatcher.group(1));
-        return new ItemDropAction(logger, droppedItems, droppedLocations, period, plugin);
+
+        boolean random = true;
+        Matcher randomLocMatcher = RANDOM_LOC_FIELD.matcher(body);
+        if (randomLocMatcher.find()) {
+            random = Boolean.parseBoolean(randomLocMatcher.group(1));
+        }
+        return new ItemDropAction(logger, droppedItems, droppedLocations, period, random, plugin);
     }
 }

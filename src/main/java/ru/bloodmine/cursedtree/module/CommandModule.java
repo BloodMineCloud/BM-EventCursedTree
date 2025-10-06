@@ -19,6 +19,8 @@ public class CommandModule extends AbstractModule {
         bind(ReloadCommand.class).in(Scopes.SINGLETON);
         bind(StartCommand.class).in(Scopes.SINGLETON);
         bind(StopCommand.class).in(Scopes.SINGLETON);
+        bind(TpCommand.class).in(Scopes.SINGLETON);
+        bind(ItemsCommand.class).in(Scopes.SINGLETON);
     }
 
     @Provides
@@ -33,22 +35,32 @@ public class CommandModule extends AbstractModule {
     }
 
     @ProvidesIntoSet
-    public CommandPlugin phaseCommand(PhaseCommand command) {
+    public CommandPlugin command(PhaseCommand command) {
         return command;
     }
 
     @ProvidesIntoSet
-    public CommandPlugin reloadCommand(ReloadCommand command) {
+    public CommandPlugin command(ReloadCommand command) {
         return command;
     }
 
     @ProvidesIntoSet
-    public CommandPlugin startCommand(StartCommand command) {
+    public CommandPlugin command(StartCommand command) {
         return command;
     }
 
     @ProvidesIntoSet
-    public CommandPlugin stopCommand(StopCommand command) {
+    public CommandPlugin command(StopCommand command) {
+        return command;
+    }
+
+    @ProvidesIntoSet
+    public CommandPlugin command(TpCommand command) {
+        return command;
+    }
+
+    @ProvidesIntoSet
+    public CommandPlugin command(ItemsCommand command) {
         return command;
     }
 }

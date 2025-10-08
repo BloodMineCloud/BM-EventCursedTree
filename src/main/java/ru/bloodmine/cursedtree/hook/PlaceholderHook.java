@@ -18,6 +18,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
     private static final String X_PLACEHOLDER = "active_tree_x";
     private static final String Y_PLACEHOLDER = "active_tree_y";
     private static final String Z_PLACEHOLDER = "active_tree_z";
+    private static final String WORLD_PLACEHOLDER = "active_tree_world";
 
     private final ActivateTreeService activateTreeService;
 
@@ -64,6 +65,9 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
         else if (params.equalsIgnoreCase(Z_PLACEHOLDER)) {
             return String.valueOf(activeTree.z());
+        }
+        else if (params.equalsIgnoreCase(WORLD_PLACEHOLDER)) {
+            return activeTree.spawnLocation().getWorld().getName();
         }
 
         return null;

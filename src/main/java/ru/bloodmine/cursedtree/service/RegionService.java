@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import ru.bloodmine.cursedtree.logger.InjectLogger;
 import ru.bloodmine.cursedtree.util.RandomHashGenerator;
 
 import java.util.HashMap;
@@ -26,6 +28,9 @@ import java.util.Set;
 public class RegionService {
     private static final String NAME_TEMPLATE = "tree_id_%s_hash_%s";
     private static String HASH = RandomHashGenerator.generate();
+
+    @InjectLogger
+    private Logger logger;
 
     private final Map<String, String> sessionNameToWorld = new HashMap<>();
     private final Set<String> activeRegions = new HashSet<>();
@@ -62,7 +67,7 @@ public class RegionService {
 
             RegionManager rm = container.get(BukkitAdapter.adapt(world));
             if (rm == null) return;
-
+            logger.info("Clearing regions for {}", sessionName);
             rm.removeRegion(sessionName);
         });
 

@@ -21,6 +21,7 @@ public class PotionEffectAction implements Action {
         if (bukkitTask != null) bukkitTask.cancel();
         bukkitTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> player.getLocation().getWorld().equals(tree.spawnLocation().getWorld()))
                     .filter(player -> player.getLocation().distance(tree.spawnLocation()) <= distance)
                     .forEach(player -> player.addPotionEffect(effect));
         }, 0, period);

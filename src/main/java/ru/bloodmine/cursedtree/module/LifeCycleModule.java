@@ -3,7 +3,6 @@ package ru.bloodmine.cursedtree.module;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import ru.bloodmine.cursedtree.hook.PlaceholderHook;
 import ru.bloodmine.cursedtree.lifecycle.*;
 import ru.bloodmine.cursedtree.service.LifeCycleService;
 import ru.bloodmine.cursedtree.util.LifeCyclable;
@@ -15,8 +14,8 @@ public class LifeCycleModule extends AbstractModule {
 
         bind(CommandLifeCycle.class).in(Scopes.SINGLETON);
         bind(TreeLifeCycle.class).in(Scopes.SINGLETON);
-        bind(ItemInputManagerLifeCycle.class).in(Scopes.SINGLETON);
-        bind(ListenerLifeCycle.class).in(Scopes.SINGLETON);
+        bind(EditConfigItemGuiLifeCycle.class).in(Scopes.SINGLETON);
+        //bind(ListenerLifeCycle.class).in(Scopes.SINGLETON);
         bind(PlaceholderHookLifeCycle.class).in(Scopes.SINGLETON);
     }
 
@@ -29,14 +28,14 @@ public class LifeCycleModule extends AbstractModule {
     }
 
     @ProvidesIntoSet
-    public LifeCyclable lifecycle(ItemInputManagerLifeCycle lifeCycle) {
+    public LifeCyclable lifecycle(EditConfigItemGuiLifeCycle lifeCycle) {
         return lifeCycle;
     }
 
-    @ProvidesIntoSet
-    public LifeCyclable lifecycle(ListenerLifeCycle lifeCycle) {
-        return lifeCycle;
-    }
+//    @ProvidesIntoSet
+//    public LifeCyclable lifecycle(ListenerLifeCycle lifeCycle) {
+//        return lifeCycle;
+//    }
 
     @ProvidesIntoSet
     public LifeCyclable lifecycle(PlaceholderHookLifeCycle lifeCycle) {

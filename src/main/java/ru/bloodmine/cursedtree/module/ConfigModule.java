@@ -124,7 +124,9 @@ public class ConfigModule extends AbstractModule {
 
     @Provides
     public @Named("droppedItems") List<ItemStack> droppedItems(ConfigManager configManager) {
-        return configManager.getItemConfig().getItems();
+        List<ItemStack> droppedItems = new ArrayList<>(configManager.getItemConfig().getItems());
+        Collections.shuffle(droppedItems);
+        return droppedItems;
     }
 
     @Provides

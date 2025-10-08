@@ -51,6 +51,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:1.18.38"
     implementation 'com.google.inject:guice:7.0.0'
     implementation "com.google.guava:guava:33.5.0-jre"
+    implementation 'com.github.stefvanschie.inventoryframework:IF:0.11.3'
 
     /* TEST */
     testImplementation platform('org.junit:junit-bom:5.10.0')
@@ -82,6 +83,7 @@ test {
 }
 
 shadowJar {
-    relocate 'com.google', 'ru.bloodmine.cursedtree.shadow'
+    relocate 'com.github', 'ru.bloodmine.cursedtree.lib.github'
+    relocate 'com.google', 'ru.bloodmine.cursedtree.lib.google'
     minimize()
 }

@@ -72,7 +72,6 @@ public class BMCursedTreePlugin extends JavaPlugin {
                 new ServiceModule(),
                 new LifeCycleModule(),
                 new CommandModule(),
-                new ListenerModule(),
                 new PlaceholderHookModule()
         );
 

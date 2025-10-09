@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class ItemDropParser implements ActionParser<ItemDropAction> {
     private static final Pattern PERIOD_FIELD = Pattern.compile("(?:p:|period:)?([0-9]+)");
     private static final Pattern RANDOM_LOC_FIELD = Pattern.compile("(?:r:|random:)?(true|false)");
+    private static final Pattern PLAYER_RADIUS_FIELD = Pattern.compile("(?:p:|radius:)?([0-9]+)");
 
     @InjectLogger
     private Logger logger;
@@ -54,6 +55,12 @@ public class ItemDropParser implements ActionParser<ItemDropAction> {
         if (randomLocMatcher.find()) {
             random = Boolean.parseBoolean(randomLocMatcher.group(1));
         }
-        return new ItemDropAction(logger, droppedItems, droppedLocations, period, random, plugin);
+
+        double radius = 50;
+        Matcher playerRadiusMatcher = PLAYER_RADIUS_FIELD.matcher(body);
+        if (playerRadiusMatcher.find()) {
+            radius = Double.parseDouble(playerRadiusMatcher.group(1));
+        }
+        return new ItemDropAction(logger, droppedItems, droppedLocations, period, random, radius, plugin);
     }
 }

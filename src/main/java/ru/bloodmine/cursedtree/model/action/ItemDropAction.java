@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,6 +31,7 @@ public class ItemDropAction implements Action {
     private final Collection<BlockVector> droppedVectors;
     private final long period;
     private final boolean randomLoc;
+    private final double playerRadius;
     private final JavaPlugin plugin;
 
     private BukkitTask bukkitTask;
@@ -50,7 +52,8 @@ public class ItemDropAction implements Action {
         Iterator<Location> locationIterator = Iterators.cycle(droppedLocations);
         Iterator<ItemStack> dropItemIterator = droppedItems.iterator();
         bukkitTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (dropItemIterator.hasNext() && locationIterator.hasNext()) {
+            boolean hasPlayer = tree.spawnLocation().getNearbyPlayers(playerRadius, playerRadius, 10).stream().findAny().isPresent();
+            if ( hasPlayer && dropItemIterator.hasNext() && locationIterator.hasNext()) {
                 ItemStack droppedItem = dropItemIterator.next();
                 Location location = locationIterator.next();
                 Item item = location.getWorld().dropItemNaturally(location, droppedItem);

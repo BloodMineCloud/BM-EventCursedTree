@@ -89,7 +89,7 @@ public class EditConfigItemGui {
             e.setCancelled(true);
             storagePane.clear();
             updatePageLabel(controls, storagePane.getCurrentPage(), storagePane.getPages());
-            storagePane.setPage(1);
+            storagePane.setPage(0);
             gui.update();
         });
         GuiItem prev = new GuiItem(named(Material.ARROW, Component.text("⟨ Назад").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)), e -> {
@@ -153,7 +153,7 @@ public class EditConfigItemGui {
 
     public void update() {
         if (gui == null) return;
-        storagePane.setItems(configManager.getItemConfig().getItems());
+        save();
         gui.update();
     }
 
@@ -200,7 +200,7 @@ public class EditConfigItemGui {
     private static void updatePageLabel(StaticPane controls, int page, int totalPages) {
         Component comp = Component.text()
                 .append(Component.text("Страница ", NamedTextColor.GRAY))
-                .append(Component.text(String.valueOf(page), NamedTextColor.WHITE))
+                .append(Component.text(String.valueOf(page+1), NamedTextColor.WHITE))
                 .append(Component.text("/", NamedTextColor.GRAY))
                 .append(Component.text(String.valueOf(totalPages), NamedTextColor.WHITE))
                 .decoration(TextDecoration.ITALIC, false)

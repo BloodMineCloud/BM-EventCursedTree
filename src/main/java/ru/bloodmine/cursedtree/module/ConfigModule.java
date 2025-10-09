@@ -4,17 +4,23 @@ import com.google.inject.*;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.flags.*;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.FlagContext;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BlockVector;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ru.bloodmine.cursedtree.BMCursedTreePlugin;
 import ru.bloodmine.cursedtree.config.ActionSettings;
 import ru.bloodmine.cursedtree.config.ConfigManager;
 import ru.bloodmine.cursedtree.config.PhaseSettings;
 import ru.bloodmine.cursedtree.model.Phase;
 import ru.bloodmine.cursedtree.model.Tree;
-import ru.bloodmine.cursedtree.model.action.*;
+import ru.bloodmine.cursedtree.model.action.Action;
 import ru.bloodmine.cursedtree.model.parser.*;
 
 import java.nio.file.Path;
@@ -74,7 +80,7 @@ public class ConfigModule extends AbstractModule {
     public @Named("flags") Map<Flag<?>, Object> flags(ConfigManager configManager) {
         Map<Flag<?>, Object> flagMap = new HashMap<>();
         for (Map.Entry<String, String> flagEntry : configManager.getMainConfig().getRegion().getFlags().entrySet()) {
-             Flag<?> flag = Flags.fuzzyMatchFlag(WorldGuard.getInstance().getFlagRegistry(), flagEntry.getKey());
+            Flag<?> flag = Flags.fuzzyMatchFlag(WorldGuard.getInstance().getFlagRegistry(), flagEntry.getKey());
             try {
                 Object value = flag.parseInput(FlagContext.create().setInput(flagEntry.getValue()).build());
                 flagMap.put(flag, value);
@@ -96,7 +102,7 @@ public class ConfigModule extends AbstractModule {
     @Singleton
     public @Named("trees") Map<String, Tree> treeMap(ConfigManager configManager) {
         return configManager.getMainConfig().getSaplings().entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey() ,new Tree(entry.getKey(), entry.getValue())))
+                .map(entry -> Map.entry(entry.getKey(), new Tree(entry.getKey(), entry.getValue())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
@@ -111,8 +117,7 @@ public class ConfigModule extends AbstractModule {
                 ActionParser<?> actionParser = mapActionParsers.get(actionSetting.getName().toLowerCase());
                 if (actionParser == null) {
                     logger.warn("Unknown action parser '{}'", actionSetting.getName());
-                }
-                else {
+                } else {
                     actions.add(actionParser.parse(actionSetting.getBody()));
                 }
             }

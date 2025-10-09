@@ -124,12 +124,12 @@ public class BMCursedTreePlugin extends JavaPlugin {
             plugin.getLogger().severe("Failed to unregister commands: " + ex.getMessage());
         }
 
-        // Обновить таб-комплит/Brigadier у клиентов и консоли
+        // Обновить таб-комплит у клиентов и консоли
         try {
             Method method = Server.class.getDeclaredMethod("syncCommands");
             method.invoke(Bukkit.getServer());
         } catch (Throwable ignored) {
-            // на всякий: если нет (кастомные ядра), просто молча пропускаем
+            // Игнорируем
         }
     }
 }
